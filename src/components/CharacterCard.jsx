@@ -3,6 +3,7 @@ import { api } from "../../api/axios"
 import { colorBasedOnStatus } from "../lib/colorBasedOnStatus"
 import { Circle, X } from "lucide-react"
 import { fillBasedOnStatus } from "../lib/fillBasedOnStatus"
+import { columnsBasedOnSize } from "../lib/columnsBasedOnSize"
 
 export default function CharacterCard(props){
   const [originDetails, setOriginDetails] = useState({})
@@ -11,6 +12,7 @@ export default function CharacterCard(props){
   const [originCharacters, setOriginCharacters] = useState([])
   const [locationDetails, setLocationDetails] = useState({})
   const [locationCharacters, setLocationCharacters] = useState([])
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (originOpen) {
@@ -43,15 +45,29 @@ export default function CharacterCard(props){
   }
 
   async function getOriginCharacters(){
-    const responses = await Promise.all(originDetails.residents.map(url => api.get(url)));
-    const data = responses.map(response => response.data);
-    setOriginCharacters(data)
+    setLoading(true);
+    try {
+      const responses = await Promise.all(originDetails.residents.map(url => api.get(url)));
+      const data = responses.map(response => response.data);
+      setOriginCharacters(data);
+    } catch (error) {
+      console.error('Error fetching origin characters:', error);
+    } finally {
+      setLoading(false);
+    }
   }
   
   async function getLocationCharacters(){
-    const responses = await Promise.all(locationDetails.residents.map(url => api.get(url)));
-    const data = responses.map(response => response.data);
-    setLocationCharacters(data)
+    setLoading(true);
+    try {
+      const responses = await Promise.all(locationDetails.residents.map(url => api.get(url)));
+      const data = responses.map(response => response.data);
+      setLocationCharacters(data);
+    } catch (error) {
+      console.error('Error fetching location characters:', error);
+    } finally {
+      setLoading(false);
+    }
   }
   
   function openOrigin(){
@@ -79,7 +95,12 @@ export default function CharacterCard(props){
         </div>
         <div>
           <h4 className="text-lg text-slate-500 font-bold">Origin:</h4>
-          <h3 className="text-md text-slate-200 underline hover:cursor-pointer hover:opacity-70 duration-300" onClick={() => openOrigin()}>{props.characterOrigin.name}</h3>
+          {props.characterOrigin.name !== 'unknown' ? (
+            <h3 className="text-md text-slate-200 underline hover:cursor-pointer hover:opacity-70 duration-300" onClick={() => openOrigin()}>{props.characterOrigin.name}</h3>
+          ) : (
+            <h3 className="text-md text-slate-200">{props.characterOrigin.name}</h3>
+          )
+          }
           {originOpen && (
            <div key={originDetails.id} className="inset-0 text-center fixed bg-slate-800 text-white w-1/2 overflow-y-scroll h-1/2 mx-auto mt-40 rounded-lg border border-black">
             <div className="flex justify-between ml-5 mt-5">
@@ -93,7 +114,7 @@ export default function CharacterCard(props){
               <p>{originDetails.dimension}</p>
               <div>
                 <h3 className="text-xl text-slate-500 mt-5 font-bold">Residents</h3>
-                <div className="grid grid-cols-4 justify-center gap-5 p-5">
+                <div className={`grid ${columnsBasedOnSize(originCharacters.length)} justify-center gap-5 p-5`}>
                   {originCharacters.map(character => (
                     <div className="flex flex-col items-center border rounded-lg mx-2 p-2 bg-slate-900" key={character.id}>
                       <img className="rounded-full" width={52} src={character.image} alt="" />
@@ -108,7 +129,11 @@ export default function CharacterCard(props){
         </div>
         <div>
           <h4 className="text-lg text-slate-500 font-bold">Last known location: </h4>
-          <h3 className="text-md text-slate-200 underline hover:cursor-pointer hover:opacity-70 duration-300 mb-2" onClick={() => openLocation()}>{props.characterLocation.name}</h3>
+          {props.characterLocation.name !== 'unknown' ? (
+            <h3 className="text-md text-slate-200 underline hover:cursor-pointer hover:opacity-70 duration-300 mb-2" onClick={() => openLocation()}>{props.characterLocation.name}</h3>
+          ): (
+            <h3 className="text-md text-slate-200">{props.characterLocation.name}</h3>
+          )}
           {locationOpen && (
             <div key={locationDetails.id} className="inset-0 text-center fixed bg-slate-800 text-white w-1/2 overflow-y-scroll h-1/2 mx-auto mt-40 rounded-lg border border-black">
               <div className="flex justify-between ml-5 mt-5">
@@ -123,15 +148,19 @@ export default function CharacterCard(props){
                 <h2 className="text-xl text-slate-500 font-bold">Dimension</h2>
                 <p>{locationDetails.name}</p>
                 <div>
-                  <h3 className="text-xl text-slate-500 font-bold">Residents</h3>
-                  <div className="grid grid-cols-4 justify-center gap-5 p-5">        
-                    {locationCharacters.map(character => (
-                      <div className="flex flex-col items-center border rounded-lg mx-2 p-2 bg-slate-900" key={character.id}>
-                        <img className="rounded-full" width={52} src={character.image} alt="" />
-                        <p className="font-bold text-emerald-300">{character.name}</p>
-                      </div>
-                    ))}
-                  </div>
+                  <h3 className="text-xl text-slate-500 font-bold mt-5">Residents</h3>
+                  {loading ? (
+                    <div><p className="text-xl">Loading...</p></div>
+                  ): (
+                    <div className={`grid gap-5 p-5 ${columnsBasedOnSize(locationCharacters.length)}`}>        
+                      {locationCharacters.map(character => (
+                        <div className="flex flex-col items-center border rounded-lg mx-2 p-2 bg-slate-900" key={character.id}>
+                          <img className="rounded-full" width={52} src={character.image} alt="" />
+                          <p className="font-bold text-emerald-300">{character.name}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

@@ -130,7 +130,6 @@ describe('App Component', () => {
     api.get.mockResolvedValueOnce(mockDataPage1);
 
     render(<App />)
-
     const inputField = screen.getByPlaceholderText('Search by name...');
     expect(inputField).toBeInTheDocument();
 
@@ -148,6 +147,8 @@ describe('App Component', () => {
     fireEvent.change(inputField, { target: { value: 'Test' } });
     expect(screen.queryByText('Morty Smith')).not.toBeInTheDocument();
     expect(screen.queryByText('Rick Sanchez')).not.toBeInTheDocument();
-    expect(screen.getByText("No characters matching Test were found on this page")).toBeInTheDocument();
+    expect(screen.getByText(/No characters matching/i)).toBeInTheDocument();
+    expect(screen.getByText('Test')).toBeInTheDocument();
+    expect(screen.getByText(/were found on this page/i))
   })
 });

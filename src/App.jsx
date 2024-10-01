@@ -45,9 +45,9 @@ function App() {
         <input className="w-96 px-2 py-1 rounded-lg mb-4" onChange={(event) => setSearchQuery(event.target.value)} type="text" placeholder='Search by name...' />
         <div className="text-slate-200 text-lg">
           {searchQuery && filteredCharacters.length !== 1 ? (
-            <p>{filteredCharacters.length} results for: {searchQuery} </p>
+            <p className="mb-2">{filteredCharacters.length} results for: {searchQuery} </p>
           ): searchQuery && (
-            <p>{filteredCharacters.length} result for: {searchQuery} </p>
+            <p className="mb-2">{filteredCharacters.length} result for: {searchQuery} </p>
           )}
         </div>
       </div>
@@ -75,7 +75,7 @@ function App() {
             ))}
           </div>
         ) : (
-          <p>No characters matching {searchQuery} were found on this page</p>
+          <p className="text-xl font-bold text-slate-200 text-center">No characters matching <span className="underline text-emerald-300">{searchQuery}</span> were found on this page</p>
         )}
       </div>
     </div>
