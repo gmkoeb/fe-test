@@ -114,14 +114,21 @@ export default function CharacterCard(props){
               <p>{originDetails.dimension}</p>
               <div>
                 <h3 className="text-xl text-slate-500 mt-5 font-bold">Residents</h3>
-                <div className={`grid ${columnsBasedOnSize(originCharacters.length)} justify-center gap-5 p-5`}>
-                  {originCharacters.map(character => (
-                    <div className="flex flex-col items-center border rounded-lg mx-2 p-2 bg-slate-900" key={character.id}>
-                      <img className="rounded-full" width={52} src={character.image} alt="" />
-                      <p className="font-bold text-emerald-300">{character.name}</p>
-                    </div>
-                  ))}
-                </div>
+                {loading ? (
+                  <div><p className="text-xl">Loading...</p></div>
+                ) : (
+                  <div className={`grid ${columnsBasedOnSize(originCharacters.length)} justify-center gap-5 p-5`}>
+                    {originCharacters.map(character => (
+                      <div className="flex flex-col items-center border rounded-lg mx-2 p-2 bg-slate-900" key={character.id}>
+                        <img className="rounded-full" width={52} src={character.image} alt="" />
+                        <p className="font-bold text-emerald-300">{character.name}</p>
+                      </div>
+                    ))}
+                    {originCharacters.length === 0 && (
+                      <p className="text-center">There are no residents in this world</p>
+                    )}
+                  </div>
+                )}
               </div>
             </div> 
             </div>
@@ -159,6 +166,9 @@ export default function CharacterCard(props){
                           <p className="font-bold text-emerald-300">{character.name}</p>
                         </div>
                       ))}
+                      {locationCharacters.length === 0 && (
+                        <p>There are no residents in this world</p>
+                      )}
                     </div>
                   )}
                 </div>
