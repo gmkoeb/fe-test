@@ -4,25 +4,39 @@ import CharacterCard from "./components/CharacterCard";
 
 function App() {
   const [characters, setCharacters] = useState([]);
-  const [filteredCharacters, setFilteredCharacters] = useState([]);
   const [info, setInfo] = useState({});
   const [currentPage, setCurrentPage] = useState('/character/?page=1');
   const [searchQuery, setSearchQuery] = useState('');
-
-  async function getCharacters(){
-    const response = await api.get(currentPage);
-    setCharacters(response.data.results);
-    setFilteredCharacters(response.data.results);
-    setInfo(response.data.info);
+  const [error, setError] = useState(null)
+  async function getCharacters(url){
+    try {
+      const response = await api.get(url);
+      setCharacters(response.data.results);
+      setInfo(response.data.info);
+    } catch (error) {
+      setError(error)
+    }
   }
   
+  function handlePagination(page){
+    if (searchQuery !== '' && page === 'first') {
+      setCurrentPage(`/character/?page=1&name=${searchQuery}`)
+    } else if (searchQuery === '' && page === 'first') {
+      setCurrentPage('/character/?page=1')
+    } else {
+      setCurrentPage(page)
+    }
+  }
+
   useEffect(() => {
-    getCharacters()
+      getCharacters(currentPage);
   }, [currentPage]);
 
   useEffect(() => {
-    setFilteredCharacters(() => characters.filter((character => character.name.toLowerCase().includes(searchQuery.toLowerCase()))))
-  }, [searchQuery, characters])
+    const url = searchQuery ? `/character/?name=${searchQuery}&page=1` : '/character/?page=1';
+    setCurrentPage(url);
+    setError('')
+  }, [searchQuery]);
 
   return (
     <div className="mb-20 mx-auto">
@@ -34,10 +48,10 @@ function App() {
       <div className="flex flex-col items-center">
         <input className="w-96 px-2 py-1 rounded-lg mb-4" onChange={(event) => setSearchQuery(event.target.value)} type="text" placeholder='Search by name...' />
         <div className="text-slate-200 text-lg">
-          {searchQuery && filteredCharacters.length !== 1 ? (
-            <p className="mb-2">{filteredCharacters.length} results for: {searchQuery} </p>
-          ): searchQuery && (
-            <p className="mb-2">{filteredCharacters.length} result for: {searchQuery} </p>
+          {searchQuery && info.count !== 1 && !error ? (
+            <p className="mb-2">{info.count} results for: {searchQuery} </p>
+          ): searchQuery && !error && (
+            <p className="mb-2">{info.count} result for: {searchQuery} </p>
           )}
         </div>
       </div>
@@ -45,17 +59,17 @@ function App() {
         <div className="flex mb-4 text-white gap-16 justify-center">
           {info.prev && (
             <div className="gap-16 flex">
-              <button onClick={() => setCurrentPage(info.prev)} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">Previous Page</button>
-              <button onClick={() => setCurrentPage('/character/?page=1')} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">First Page</button>
+              <button onClick={() => handlePagination(info.prev)} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">Previous Page</button>
+              <button onClick={() => handlePagination('first')} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">First Page</button>
             </div>
           )}
           {info.next && (
-            <button onClick={() => setCurrentPage(info.next)} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">Next Page</button>
+            <button onClick={() => handlePagination(info.next)} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">Next Page</button>
           )}
         </div>
-        {filteredCharacters.length > 0 ? (
+        {!error ? (
           <div className="flex flex-wrap gap-4 justify-center">
-            {filteredCharacters.map(character => (
+            {characters.map(character => (
               <CharacterCard
                 key={character.id}
                 characterImage={character.image}

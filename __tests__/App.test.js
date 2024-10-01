@@ -75,6 +75,31 @@ const mockDataPage2 = {
   },
 };
 
+const mockDataRick = {
+  data: {
+    results: [
+      { id: 1, name: 'Rick Sanchez', image: '', status: 'Alive', species: 'Human', origin: {}, location: {} }
+    ],
+    info: {
+      next: null,
+      prev: null,
+      count: 1
+    }
+  }
+}
+
+const mockDataEmpty = {
+  data: {
+    results: [],
+    info: {
+      count: 0,
+      pages: 0,
+      next: null,
+      prev: null,
+    },
+  },
+};
+
 describe('App Component', () => {
   it('renders characters and pagination buttons', async () => {
     api.get.mockResolvedValueOnce(mockDataPage1);
@@ -126,29 +151,37 @@ describe('App Component', () => {
     });
   });
 
-  it('filters characters by name', async () => {
+  it('should filter characters based on the search input', async () => {
     api.get.mockResolvedValueOnce(mockDataPage1);
 
-    render(<App />)
-    const inputField = screen.getByPlaceholderText('Search by name...');
-    expect(inputField).toBeInTheDocument();
+    render(<App />);
 
-    await waitFor(() => {
-      expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
-      expect(screen.getByText('Morty Smith')).toBeInTheDocument();
-    });
+    await waitFor(() => expect(screen.getByText('Rick Sanchez')).toBeInTheDocument());
+    expect(screen.getByText('Morty Smith')).toBeInTheDocument();
 
-    fireEvent.change(inputField, { target: { value: 'Rick' } });
+    api.get.mockResolvedValueOnce(mockDataRick);
 
-    expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
+    const searchInput = screen.getByPlaceholderText('Search by name...');
+    fireEvent.change(searchInput, { target: { value: 'Rick' } });
+
+    await waitFor(() => expect(screen.getByText('Rick Sanchez')).toBeInTheDocument());
+
+    expect(screen.queryByText('Morty Smith')).not.toBeInTheDocument();
     expect(screen.getByText('1 result for: Rick')).toBeInTheDocument();
-    expect(screen.queryByText('Morty Smith')).not.toBeInTheDocument();
+  });
 
-    fireEvent.change(inputField, { target: { value: 'Test' } });
-    expect(screen.queryByText('Morty Smith')).not.toBeInTheDocument();
-    expect(screen.queryByText('Rick Sanchez')).not.toBeInTheDocument();
-    expect(screen.getByText(/No characters matching/i)).toBeInTheDocument();
-    expect(screen.getByText('Test')).toBeInTheDocument();
-    expect(screen.getByText(/were found on this page/i))
-  })
+  it('should display no results message when no characters match the search query', async () => {
+    api.get.mockResolvedValueOnce(mockDataEmpty);
+
+    render(<App />);
+
+    const searchInput = screen.getByPlaceholderText('Search by name...');
+    fireEvent.change(searchInput, { target: { value: 'Unknown Character' } });
+
+    await waitFor(() =>
+      expect(screen.getByText(/No characters matching/i)).toBeInTheDocument()
+    );
+    expect(screen.getByText(/Unknown Character/i)).toBeInTheDocument()
+    expect(screen.getByText(/were found on this page/i)).toBeInTheDocument()
+  });
 });
