@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/axios";
 import CharacterCard from "./components/CharacterCard";
-import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
-
 
 function App() {
   const [characters, setCharacters] = useState([]);
@@ -52,12 +50,15 @@ function App() {
         </div>
       </div>
       <div className="flex flex-col text-white">
-        <div className="flex mb-4 gap-32 text-white justify-center">
+        <div className="flex mb-4 text-white gap-16 justify-center">
           {info.prev && (
-            <button onClick={previousPage} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">Previous Page</button>
+            <div className="gap-16 flex">
+              <button onClick={() => setCurrentPage(info.prev)} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">Previous Page</button>
+              <button onClick={() => setCurrentPage('/character/?page=1')} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">First Page</button>
+            </div>
           )}
           {info.next && (
-            <button onClick={nextPage} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">Next Page</button>
+            <button onClick={() => setCurrentPage(info.next)} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">Next Page</button>
           )}
         </div>
         {filteredCharacters.length > 0 ? (
