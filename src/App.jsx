@@ -66,8 +66,8 @@ function App() {
               characterName={character.name}
               characterStatus={character.status}
               characterSpecies={character.species}
-              characterOrigin={character.origin.name}
-              characterLocation={character.location.name}
+              characterOrigin={character.origin}
+              characterLocation={character.location}
             />
           ))}
         </div>
