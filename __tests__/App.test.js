@@ -8,8 +8,30 @@ jest.mock('../api/axios');
 const mockDataPage1 = {
   data: {
     results: [
-      { id: 1, name: 'Rick Sanchez' },
-      { id: 2, name: 'Morty Smith' },
+      { 
+        id: 1, 
+        name: 'Rick Sanchez', 
+        status: 'Alive',
+        species: 'Human',
+        origin: {
+          name: 'Earth (C-137)'
+        },
+        location: {
+          name: 'Citadel of Ricks',
+        }
+      },
+      { 
+        id: 2, 
+        name: 'Morty Smith', 
+        status: 'Alive',
+        species: 'Human',
+        origin: {
+          name: 'unknown'
+        },
+        location: {
+          name: 'Citadel of Ricks',
+        }
+      },
     ],
     info: {
       next: '/character/?page=2',
@@ -21,8 +43,30 @@ const mockDataPage1 = {
 const mockDataPage2 = {
   data: {
     results: [
-      { id: 3, name: 'Summer Smith' },
-      { id: 4, name: 'Beth Smith' },
+      { 
+        id: 3, 
+        name: 'Summer Smith', 
+        status: 'Alive',
+        species: 'Human',
+        origin: {
+          name: 'Earth (Replacement Dimension)'
+        },
+        location: {
+          name: 'Earth (Replacement Dimension)',
+        }
+      },
+      { 
+        id: 4, 
+        name: 'Beth Smith', 
+        status: 'Alive',
+        species: 'Human',
+        origin: {
+          name: 'Earth (Replacement Dimension)'
+        },
+        location: {
+          name: 'Earth (Replacement Dimension)',
+        }
+      },
     ],
     info: {
       next: '/character/?page=3',
@@ -41,7 +85,13 @@ describe('App Component', () => {
     
     await waitFor(() => {
       expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
+      expect(screen.getAllByText('Alive-Human')).toHaveLength(2);
+      expect(screen.getAllByText('Origin:')).toHaveLength(2);
+      expect(screen.getByText('Earth (C-137)')).toBeInTheDocument();
+      expect(screen.getAllByText('Last known location:')).toHaveLength(2);
+      expect(screen.getAllByText('Citadel of Ricks')).toHaveLength(2);
       expect(screen.getByText('Morty Smith')).toBeInTheDocument();
+      expect(screen.getByText('unknown')).toBeInTheDocument();
       expect(screen.getByText('next')).toBeInTheDocument();
       expect(prevButton).toBeNull();
     });

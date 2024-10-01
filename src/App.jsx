@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/axios";
+import CharacterCard from "./components/CharacterCard";
 
 
 function App() {
@@ -18,25 +19,20 @@ function App() {
   }, [currentPage]);
 
   function nextPage(){
-    if (info.next !== null) {
-      setCurrentPage(info.next);
-    }
+    setCurrentPage(info.next);
   }
 
   function previousPage(){
-    if (info.prev !== null) {
-      setCurrentPage(info.prev);
-    }
+    setCurrentPage(info.prev);
   }
   
   return (
     <>
-      <h1>Rick & Morty Characters</h1>
-      {characters.map(character => (
-        <div key={character.id}>
-          <h1>{character.name}</h1>
-        </div>
-      ))}
+      <header>
+        <nav>
+          <h1 className="text-6xl text-center mb-40">Rick & Morty Characters</h1>
+        </nav>
+      </header>
       {info.prev && (
         <button onClick={previousPage}>prev</button>
       )}
@@ -44,6 +40,19 @@ function App() {
       {info.next && (
         <button onClick={nextPage}>next</button>
       )}
+      <div className="flex flex-wrap gap-4 justify-center">
+        {characters.map(character => (
+          <CharacterCard 
+            key={character.id}
+            characterImage={character.image}
+            characterName={character.name}
+            characterStatus={character.status}
+            characterSpecies={character.species}
+            characterOrigin={character.origin.name}
+            characterLocation={character.location.name}
+          />
+        ))}
+      </div>
     </>
   )
 }
