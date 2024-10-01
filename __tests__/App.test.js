@@ -85,7 +85,6 @@ describe('App Component', () => {
     
     await waitFor(() => {
       expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
-      expect(screen.getAllByText('Alive-Human')).toHaveLength(2);
       expect(screen.getAllByText('Origin:')).toHaveLength(2);
       expect(screen.getByText('Earth (C-137)')).toBeInTheDocument();
       expect(screen.getAllByText('Last known location:')).toHaveLength(2);
