@@ -126,4 +126,29 @@ describe('App Component', () => {
       expect(screen.getByText('Morty Smith')).toBeInTheDocument();
     });
   });
+
+  it('filters characters by name', async () => {
+    api.get.mockResolvedValueOnce(mockDataPage1);
+
+    render(<App />)
+
+    const inputField = screen.getByPlaceholderText('Search by name...');
+    expect(inputField).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
+      expect(screen.getByText('Morty Smith')).toBeInTheDocument();
+    });
+
+    fireEvent.change(inputField, { target: { value: 'Rick' } });
+
+    expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
+    expect(screen.getByText('1 result for: Rick')).toBeInTheDocument();
+    expect(screen.queryByText('Morty Smith')).not.toBeInTheDocument();
+
+    fireEvent.change(inputField, { target: { value: 'Test' } });
+    expect(screen.queryByText('Morty Smith')).not.toBeInTheDocument();
+    expect(screen.queryByText('Rick Sanchez')).not.toBeInTheDocument();
+    expect(screen.getByText("No characters matching Test were found on this page")).toBeInTheDocument();
+  })
 });
