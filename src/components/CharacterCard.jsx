@@ -1,10 +1,10 @@
 export default function CharacterCard(props){
   return(
-    <div className="flex border w-96" key={props.id}>
-      <div className="w-40" >
-        <img src={`${props.characterImage}`} alt="" />
+    <div className="flex border w-[550px]" key={props.id}>
+      <div className="w-48">
+        <img className="h-full" src={`${props.characterImage}`} alt="" />
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 ml-4 mt-2">
         <div>
           <h1>{props.characterName}</h1>
           <h3>{props.characterStatus}-{props.characterSpecies}</h3>

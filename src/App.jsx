@@ -34,10 +34,10 @@ function App() {
   }
   
   return (
-    <>
+    <div className="mb-20">
       <header>
         <nav>
-          <h1 className="text-6xl text-center mb-40">Rick & Morty Characters</h1>
+          <h1 className="text-6xl text-center mb-40 mt-20">Rick & Morty Characters</h1>
         </nav>
       </header>
       <div>
@@ -75,7 +75,7 @@ function App() {
           <p>No characters matching {searchQuery} were found on this page</p>
         )
       }
-    </>
+    </div>
   )
 }
 
