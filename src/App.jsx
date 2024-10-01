@@ -57,13 +57,13 @@ function App() {
       </div>
       <div className="flex flex-col text-white">
         <div className="flex mb-4 text-white gap-16 justify-center">
-          {info.prev && (
+          {info.prev && !error && (
             <div className="gap-16 flex">
               <button onClick={() => handlePagination(info.prev)} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">Previous Page</button>
               <button onClick={() => handlePagination('first')} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">First Page</button>
             </div>
           )}
-          {info.next && (
+          {info.next && !error && (
             <button onClick={() => handlePagination(info.next)} className="cursor-pointer w-32 border rounded-lg hover:bg-slate-700 duration-300">Next Page</button>
           )}
         </div>
