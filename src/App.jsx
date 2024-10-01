@@ -37,8 +37,13 @@ function App() {
           <h1>{character.name}</h1>
         </div>
       ))}
-      <button onClick={nextPage}>next</button>
-      <button onClick={previousPage}>prev</button>
+      {info.prev && (
+        <button onClick={previousPage}>prev</button>
+      )}
+
+      {info.next && (
+        <button onClick={nextPage}>next</button>
+      )}
     </>
   )
 }
