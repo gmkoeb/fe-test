@@ -24,14 +24,6 @@ function App() {
     setFilteredCharacters(() => characters.filter((character => character.name.toLowerCase().includes(searchQuery.toLowerCase()))))
   }, [searchQuery, characters])
 
-  function nextPage(){
-    setCurrentPage(info.next);
-  }
-
-  function previousPage(){
-    setCurrentPage(info.prev);
-  }
-  
   return (
     <div className="mb-20 mx-auto">
       <header>
