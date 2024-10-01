@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
 import { api } from "../../api/axios"
+import { colorBasedOnStatus } from "../lib/colorBasedOnStatus"
+import { Circle, X } from "lucide-react"
+import { fillBasedOnStatus } from "../lib/fillBasedOnStatus"
 
 export default function CharacterCard(props){
   const [originDetails, setOriginDetails] = useState({})
@@ -62,62 +65,73 @@ export default function CharacterCard(props){
   }
 
   return(
-    <div className="flex border w-[550px]" key={props.id}>
+    <div className="flex border w-[550px] bg-gray-800 rounded-lg border-black" key={props.id}>
       <div className="w-48">
-        <img className="h-full" src={`${props.characterImage}`} alt="" />
+        <img className="h-full rounded-l-lg" src={`${props.characterImage}`} alt="" />
       </div>
       <div className="flex flex-col gap-3 ml-4 mt-2">
         <div>
-          <h1>{props.characterName}</h1>
-          <h3>{props.characterStatus}-{props.characterSpecies}</h3>
+          <h1 className="text-2xl text-emerald-300 font-bold">{props.characterName}</h1>
+          <div className="flex gap-1 items-center">
+            <Circle width={12} fill={fillBasedOnStatus(props.characterStatus)}/>
+            <h3 className={`${colorBasedOnStatus(props.characterStatus)} text-md`}>{props.characterStatus}-{props.characterSpecies}</h3>
+          </div>
         </div>
         <div>
-          <h4>Origin:</h4>
-          <h3 onClick={() => openOrigin()}>{props.characterOrigin.name}</h3>
+          <h4 className="text-lg text-slate-500 font-bold">Origin:</h4>
+          <h3 className="text-md text-slate-200 underline hover:cursor-pointer hover:opacity-70 duration-300" onClick={() => openOrigin()}>{props.characterOrigin.name}</h3>
           {originOpen && (
-           <div key={originDetails.id} className="inset-0 text-center fixed bg-slate-600 text-white w-1/4 h-1/2 overflow-y-scroll mx-auto mt-40">
-            <div>
-              <h1>Origin Details</h1>
-              <button onClick={() => setOriginOpen(false)}>x</button>
+           <div key={originDetails.id} className="inset-0 text-center fixed bg-slate-800 text-white w-1/2 overflow-y-scroll h-1/2 mx-auto mt-40 rounded-lg border border-black">
+            <div className="flex justify-between ml-5 mt-5">
+              <button onClick={() => setOriginOpen(false)}><X stroke="red"></X></button>
             </div>
+            <h1 className="text-2xl font-bold text-emerald-300"><span className="underline">{props.characterName}</span> Origin Details</h1>
             <div>
-              <h2>Name</h2>
+              <h2 className="text-xl font-bold text-slate-500">Name</h2>
               <p>{originDetails.name}</p>
-              <h2>Dimension</h2>
+              <h2 className="text-xl text-slate-500 font-bold">Dimension</h2>
               <p>{originDetails.dimension}</p>
               <div>
-                <h3>Residents</h3>
-                {originCharacters.map(character => (
-                  <div key={character.id}>
-                    {character.name}
-                  </div>
-                ))}
+                <h3 className="text-xl text-slate-500 mt-5 font-bold">Residents</h3>
+                <div className="grid grid-cols-4 justify-center gap-5 p-5">
+                  {originCharacters.map(character => (
+                    <div className="flex flex-col items-center border rounded-lg mx-2 p-2 bg-slate-900" key={character.id}>
+                      <img className="rounded-full" width={52} src={character.image} alt="" />
+                      <p className="font-bold text-emerald-300">{character.name}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div> 
             </div>
           )}
         </div>
         <div>
-          <h4>Last known location: </h4>
-          <h3 onClick={() => openLocation()}>{props.characterLocation.name}</h3>
+          <h4 className="text-lg text-slate-500 font-bold">Last known location: </h4>
+          <h3 className="text-md text-slate-200 underline hover:cursor-pointer hover:opacity-70 duration-300 mb-2" onClick={() => openLocation()}>{props.characterLocation.name}</h3>
           {locationOpen && (
-            <div key={locationDetails.id} className="inset-0 text-center fixed bg-slate-600 text-white w-1/4 h-1/2 overflow-y-scroll mx-auto">
-              <div>
-                <h1>Location Details</h1>
-                <button onClick={() => setLocationOpen(false)}>x</button>
+            <div key={locationDetails.id} className="inset-0 text-center fixed bg-slate-800 text-white w-1/2 overflow-y-scroll h-1/2 mx-auto mt-40 rounded-lg border border-black">
+              <div className="flex justify-between ml-5 mt-5">
+                <button onClick={() => setLocationOpen(false)}><X stroke="red"></X></button>
               </div>
               <div>
-                <h2>Name</h2>
+                <h1 className="text-2xl font-bold text-emerald-300"><span className="underline">{props.characterName}</span> Location Details</h1>
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-slate-500">Name</h2>
                 <p>{locationDetails.name}</p>
-                <h2>Dimension</h2>
+                <h2 className="text-xl text-slate-500 font-bold">Dimension</h2>
                 <p>{locationDetails.name}</p>
                 <div>
-                  <h3>Residents</h3>
-                  {locationCharacters.map(character => (
-                    <div key={character.id}>
-                      {character.name}
-                    </div>
-                  ))}
+                  <h3 className="text-xl text-slate-500 font-bold">Residents</h3>
+                  <div className="grid grid-cols-4 justify-center gap-5 p-5">        
+                    {locationCharacters.map(character => (
+                      <div className="flex flex-col items-center border rounded-lg mx-2 p-2 bg-slate-900" key={character.id}>
+                        <img className="rounded-full" width={52} src={character.image} alt="" />
+                        <p className="font-bold text-emerald-300">{character.name}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
