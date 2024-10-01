@@ -79,7 +79,7 @@ describe('App Component', () => {
   it('renders characters and pagination buttons', async () => {
     api.get.mockResolvedValueOnce(mockDataPage1);
 
-    const prevButton = screen.queryByText('prev')
+    const prevButton = screen.queryByText('Previous Page')
 
     render(<App />);
     
@@ -91,7 +91,7 @@ describe('App Component', () => {
       expect(screen.getAllByText('Citadel of Ricks')).toHaveLength(2);
       expect(screen.getByText('Morty Smith')).toBeInTheDocument();
       expect(screen.getByText('unknown')).toBeInTheDocument();
-      expect(screen.getByText('next')).toBeInTheDocument();
+      expect(screen.getByText('Next Page')).toBeInTheDocument();
       expect(prevButton).toBeNull();
     });
     
@@ -109,7 +109,7 @@ describe('App Component', () => {
 
     api.get.mockResolvedValueOnce(mockDataPage2);
 
-    fireEvent.click(screen.getByText('next'));
+    fireEvent.click(screen.getByText('Next Page'));
 
     await waitFor(() => {
       expect(screen.getByText('Summer Smith')).toBeInTheDocument();
@@ -118,7 +118,7 @@ describe('App Component', () => {
 
     api.get.mockResolvedValueOnce(mockDataPage1); 
 
-    fireEvent.click(screen.getByText('prev'));
+    fireEvent.click(screen.getByText('Previous Page'));
 
     await waitFor(() => {
       expect(screen.getByText('Rick Sanchez')).toBeInTheDocument();
